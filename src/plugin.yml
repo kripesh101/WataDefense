@@ -1,0 +1,8 @@
+name: WataDefense
+version: 0.3 Beta
+author: Kiwi
+main: tk.playgravity.WataDefense.Main
+commands:
+  ll:
+      description: Changes the last right-clicked Lockette sign to work for your entire team
+      usage: /ll
