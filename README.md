@@ -10,4 +10,4 @@ _And don't really expect to have much fun either. A majority of features are mis
 
 ```The plugin is for a "Block" defense "mini-game". It involves two teams preparing for a set time (they are isolated at this state), then fighting to reach each-other's bases until one guy takes other team's "Block", and returns to their base with the block and wins the game for their team.```
 
-Credits to **Watashi** for the idea of this plugin
+Credits to **Watashi** for the idea of this plugin. Find him on [Facebook](https://facebook.com/mack.pandey) and [Steam](https://steamcommunity.com/profiles/76561198378308596)
