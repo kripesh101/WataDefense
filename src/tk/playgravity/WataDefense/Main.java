@@ -24,6 +24,10 @@ public class Main extends JavaPlugin implements Listener {
     private List<String> red_team_str_list;
     private List<String> blue_team_str_list;
     private boolean actual_game_started = false;
+
+    private int red_block_x;
+    private int blue_block_x;
+
     private int red_spawn_y;
     private int blue_spawn_y;
     private Block blue_bedrock;
@@ -40,8 +44,8 @@ public class Main extends JavaPlugin implements Listener {
         if (interacted_block != null) {
             if (interacted_block.getZ() == 8) {
                 int block_x = interacted_block.getX();
-                boolean red_block_interacted = block_x == 258;
-                boolean blue_block_interacted = block_x == -242;
+                boolean red_block_interacted = block_x == red_block_x;
+                boolean blue_block_interacted = block_x == blue_block_x;
                 if (red_block_interacted) {
                     red_block_interacted = interacted_block.getY() == red_spawn_y;
                 } else if (blue_block_interacted) {
@@ -105,9 +109,9 @@ public class Main extends JavaPlugin implements Listener {
 
             if (connected_players_names.containsAll(actual_players_names)) {
                 //Let the game begin!
-                this.getLogger().info("Starting game in 10 seconds!");
-                int timer = 0;
-                for (timer = 0; timer <= 200; timer += 20) {
+                this.getLogger().info("Starting game in 20 seconds!");
+                int timer;
+                for (timer = 0; timer <= 400; timer += 20) {
                     actual_game_started = true;
                     int time = 10 - (timer / 20);
                     Bukkit.getScheduler().runTaskLater(this, new Runnable() {
@@ -117,13 +121,13 @@ public class Main extends JavaPlugin implements Listener {
                             run_as_console("minecraft:title @a title {" + '"' + "text" + '"' + ":" + '"' + time + '"' + "}");
                         }
                     }, timer);
-
-                    timer += 5;
                 }
 
+                timer += 5;
+
                 World the_world = Bukkit.getWorld("world");
-                int red_spawn_y = the_world.getHighestBlockYAt(258, 8);
-                int blue_spawn_y = the_world.getHighestBlockYAt(-242, 8);
+                int red_spawn_y = the_world.getHighestBlockYAt(red_block_x, 8);
+                int blue_spawn_y = the_world.getHighestBlockYAt(blue_block_x, 8);
 
 
                 Bukkit.getScheduler().runTaskLater(this, new Runnable() {
@@ -131,15 +135,20 @@ public class Main extends JavaPlugin implements Listener {
                     public void run() {
                         //TP players, set gamemodes etc. Proper beginning of the GAME!
                         //First set spawn point
-                        run_as_console("minecraft:spawnpoint @a[team=red] 258 " + red_spawn_y + " 8");
-                        run_as_console("minecraft:spawnpoint @a[team=blue] -242 " + blue_spawn_y + " 8");
+                        run_as_console("minecraft:spawnpoint @a[team=red] " + red_block_x + " " + red_spawn_y + " 8");
+                        run_as_console("minecraft:spawnpoint @a[team=blue] " + blue_block_x + " " + blue_spawn_y + " 8");
 
                         //Then, tp player
-                        run_as_console("minecraft:tp @a[team=red] 258 " + red_spawn_y + " 8");
-                        run_as_console("minecraft:tp @a[team=blue] -242 " + blue_spawn_y + " 8");
+                        run_as_console("minecraft:tp @a[team=red] " + red_block_x + " " + red_spawn_y + " 8");
+                        run_as_console("minecraft:tp @a[team=blue] " + blue_block_x + " " + blue_spawn_y + " 8");
 
                         //Then, set gamemode
                         run_as_console("minecraft:gamemode survival @a[team=!]");
+
+                        //Report Block location
+                        run_as_console("minecraft:title @a[team=!] times 0 140 20");
+                        run_as_console("minecraft:title @a[team=red] title {" + '"' + "text" + '"' + ":" + '"' + "Block at X = " + blue_block_x + ", Z = 8" + '"' + "}");
+                        run_as_console("minecraft:title @a[team=blue] title {" + '"' + "text" + '"' + ":" + '"' + "Block at X = " + red_block_x + ", Z = 8" + '"' + "}");
                     }
                 }, timer);
 
@@ -159,9 +168,14 @@ public class Main extends JavaPlugin implements Listener {
 
     private void destroy_wall() {
         World the_world = Bukkit.getWorld("world");
+        int border_distance_from_block = config.getInt("border_distance");
+
+
+        int play_area_z_min = blue_block_x - border_distance_from_block;
+        int play_area_z_max = red_block_x + border_distance_from_block;
 
         int timer = 10;
-        for (double z = -365; z <= 375; z += 16) {
+        for (int z = play_area_z_min; z <= play_area_z_max; z += 16) {
             Location spot = new Location(the_world, 8, 10, z);
             Chunk the_chunk = the_world.getChunkAt(spot);
 
@@ -213,12 +227,23 @@ public class Main extends JavaPlugin implements Listener {
 
         getServer().getPluginManager().registerEvents(this, this);
 
+        int block_distance_from_center = config.getInt("block_distance") / 2;
+        red_block_x = 8 + block_distance_from_center;
+        blue_block_x = 8 - block_distance_from_center;
+
+        int border_distance_from_block = config.getInt("border_distance");
+
+        //Complicated calculation for Z coordinates for proper square play area.
+        int play_area_z_min = blue_block_x - border_distance_from_block;
+        int play_area_z_max = red_block_x + border_distance_from_block;
+
+
         this.getCommand("ll").setExecutor(new CommandKit());
         World the_world = Bukkit.getWorld("world");
 
         //Creating the wall
         int timer = 30;
-        for (double z = -365; z <= 375; z += 16) {
+        for (int z = play_area_z_min; z <= play_area_z_max; z += 16) {
             Location spot = new Location(the_world, 8, 10, z);
             Chunk the_chunk = the_world.getChunkAt(spot);
 
@@ -245,7 +270,7 @@ public class Main extends JavaPlugin implements Listener {
             }, timer);
 
 
-            this.getLogger().info(Double.toString(z) + " will be processed in " + Integer.toString(timer) + " ticks");
+            this.getLogger().info(Integer.toString(z) + " will be processed in " + Integer.toString(timer) + " ticks");
             timer += 10;
         }
 
@@ -259,15 +284,15 @@ public class Main extends JavaPlugin implements Listener {
 
         timer += 20;
 
-        red_spawn_y = the_world.getHighestBlockYAt(258, 8) - 1;
-        Location red_block_spot = new Location(the_world, 258, red_spawn_y, 8);
+        red_spawn_y = the_world.getHighestBlockYAt(red_block_x, 8) - 1;
+        Location red_block_spot = new Location(the_world, red_block_x, red_spawn_y, 8);
         Chunk red_chunk = the_world.getChunkAt(red_block_spot);
-        String red_block_command = "minecraft:setblock 258 " + red_spawn_y + " 8 minecraft:bedrock";
+        String red_block_command = "minecraft:setblock " + red_block_x + " " + red_spawn_y + " 8 minecraft:bedrock";
 
-        blue_spawn_y = the_world.getHighestBlockYAt(-242, 8) - 1;
-        Location blue_block_spot = new Location(the_world, -242, blue_spawn_y, 8);
+        blue_spawn_y = the_world.getHighestBlockYAt(blue_block_x, 8) - 1;
+        Location blue_block_spot = new Location(the_world, blue_block_x, blue_spawn_y, 8);
         Chunk blue_chunk = the_world.getChunkAt(blue_block_spot);
-        String blue_block_command = "minecraft:setblock -242 " + blue_spawn_y + " 8 minecraft:bedrock";
+        String blue_block_command = "minecraft:setblock " + blue_block_x + " " + blue_spawn_y + " 8 minecraft:bedrock";
 
         red_bedrock = the_world.getBlockAt(red_block_spot);
         blue_bedrock = the_world.getBlockAt(blue_block_spot);
@@ -307,6 +332,10 @@ public class Main extends JavaPlugin implements Listener {
                 //Change nametagVisibility to hideForOtherTeams
                 run_as_console("minecraft:scoreboard teams option red nametagVisibility hideForOtherTeams");
                 run_as_console("minecraft:scoreboard teams option blue nametagVisibility hideForOtherTeams");
+
+                //Set team color
+                run_as_console("minecraft:scoreboard teams option red color red");
+                run_as_console("minecraft:scoreboard teams option blue color blue");
             }
         }, timer);
 
@@ -338,6 +367,7 @@ public class Main extends JavaPlugin implements Listener {
 
         timer += 5;
 
+        int border_size = border_distance_from_block * 2 + block_distance_from_center * 2;
         //Fundamental but simple preparation commands
         Bukkit.getScheduler().runTaskLater(this, new Runnable() {
             @Override
@@ -349,6 +379,9 @@ public class Main extends JavaPlugin implements Listener {
                 run_as_console("minecraft:gamerule spawnRadius 0");
                 run_as_console("minecraft:time set 6000");
 
+                //Border related stuff
+                run_as_console("minecraft:worldborder center 8. 8.");
+                run_as_console("minecraft:worldborder set " + border_size);
             }
         }, timer);
 
