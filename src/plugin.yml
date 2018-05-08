@@ -1,5 +1,5 @@
 name: WataDefense
-version: "0.4.1-Beta"
+version: "0.4.1.1-Beta"
 author: Kiwi
 main: tk.playgravity.WataDefense.Main
 commands:

@@ -1,5 +1,9 @@
 # WataDefense Changelog
 
+**v0.4.1.1-Beta**
+
+* Fixed a flaw with wall generation algorithm, introduced in 0.4-Beta. _Current solution for this isn't perfect, but does the job!_
+
 **0.4.1-Beta**
 
 * Player is notified through a title message if they get the enemy's bedrock

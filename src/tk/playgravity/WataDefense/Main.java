@@ -171,8 +171,8 @@ public class Main extends JavaPlugin implements Listener {
         int border_distance_from_block = config.getInt("border_distance");
 
 
-        int play_area_z_min = blue_block_x - border_distance_from_block;
-        int play_area_z_max = red_block_x + border_distance_from_block;
+        int play_area_z_min = blue_block_x - border_distance_from_block - 16;
+        int play_area_z_max = red_block_x + border_distance_from_block + 16;
 
         int timer = 10;
         for (int z = play_area_z_min; z <= play_area_z_max; z += 16) {
@@ -236,8 +236,8 @@ public class Main extends JavaPlugin implements Listener {
         int border_distance_from_block = config.getInt("border_distance");
 
         //Complicated calculation for Z coordinates for proper square play area.
-        int play_area_z_min = blue_block_x - border_distance_from_block;
-        int play_area_z_max = red_block_x + border_distance_from_block;
+        int play_area_z_min = blue_block_x - border_distance_from_block - 16;
+        int play_area_z_max = red_block_x + border_distance_from_block + 16;
 
 
         this.getCommand("ll").setExecutor(new CommandKit());
