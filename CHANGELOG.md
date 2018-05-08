@@ -1,5 +1,10 @@
 # WataDefense Changelog
 
+**0.4.1-Beta**
+
+* Player is notified through a title message if they get the enemy's bedrock
+* The world to run the plugin in can now be specified. `world_name` in config.yml
+
 **0.4-Beta**
 
 * Distances between the two blocks can now be configured.

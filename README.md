@@ -3,12 +3,12 @@ A Spigot (Minecraft) Plugin
 
 Plugin currently in **Beta**
 
-Latest version: `0.4-Beta`
+Latest version: `0.4.1-Beta`
 
 _Don't expect this plugin to be stable. It's beta for a reason._
 _It's not feature complete yet._
 
-**Version 0.4-Beta hasn't been tested yet. I'll remove this warning after I do some testing.**
+**Version 0.4.1-Beta hasn't been tested yet. I'll remove this warning after I do some testing.**
 
 ```The plugin is for a "Block" defense "mini-game". It involves two teams preparing for a set time (they are isolated at this state), then fighting to reach each-other's bases until one guy takes other team's "Block", and returns to their base with the block and wins the game for their team.```
 

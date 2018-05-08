@@ -1,10 +1,11 @@
+world_name: world
 red:
   - Test01
   - Test02
 blue:
   - Test03
   - Test04
-walltime: 36000 #Specify value for walltime in ticks. (1 second = 20 ticks. 1 minute = 60*20 = 1200 ticks. 36000 ticks = 30 minutes)
+walltime: 36000 #Specify time for preparation stage in ticks. (1 second = 20 ticks. 1 minute = 60*20 = 1200 ticks. 36000 ticks = 30 minutes)
 block_distance: 500 #Distance between the blocks of the two teams. Value recommended to be an even number.
 border_distance: 125 #Distance between BLOCK and the border. NOT DISTANCE FROM CENTRE. Border will always be square shape.
 first_run: true #If true, plugin will not run. This is to prevent running at first run.

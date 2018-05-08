@@ -33,6 +33,7 @@ public class Main extends JavaPlugin implements Listener {
     private Block blue_bedrock;
     private Block red_bedrock;
 
+    private World the_world;
 
     private void run_as_console(String command){
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
@@ -69,6 +70,7 @@ public class Main extends JavaPlugin implements Listener {
                     } else if ((red_block_interacted && blue_team_str_list.contains(interactor.getName()) && interacted_block.getType() == Material.BEDROCK) || (blue_block_interacted && red_team_str_list.contains(interactor.getName()) && interacted_block.getType() == Material.BEDROCK)) {
                         interactor.setPlayerListName("BR " + interactor.getName());
                         interacted_block.setType(Material.STRUCTURE_BLOCK);
+                        run_as_console("minecraft:title @a title {" + '"' + "text" + '"' + ":" + '"' + "BEDROCK OBTAINED!" + '"' + "}");
                         interactor.addScoreboardTag("bedrock");
                     } else {
                         interactor.sendMessage("Go break the other teams' bedrock");
@@ -125,7 +127,6 @@ public class Main extends JavaPlugin implements Listener {
 
                 timer += 5;
 
-                World the_world = Bukkit.getWorld("world");
                 int red_spawn_y = the_world.getHighestBlockYAt(red_block_x, 8);
                 int blue_spawn_y = the_world.getHighestBlockYAt(blue_block_x, 8);
 
@@ -167,7 +168,6 @@ public class Main extends JavaPlugin implements Listener {
     }
 
     private void destroy_wall() {
-        World the_world = Bukkit.getWorld("world");
         int border_distance_from_block = config.getInt("border_distance");
 
 
@@ -227,6 +227,8 @@ public class Main extends JavaPlugin implements Listener {
 
         getServer().getPluginManager().registerEvents(this, this);
 
+        String world_name = config.getString("world_name");
+
         int block_distance_from_center = config.getInt("block_distance") / 2;
         red_block_x = 8 + block_distance_from_center;
         blue_block_x = 8 - block_distance_from_center;
@@ -239,7 +241,7 @@ public class Main extends JavaPlugin implements Listener {
 
 
         this.getCommand("ll").setExecutor(new CommandKit());
-        World the_world = Bukkit.getWorld("world");
+        the_world = Bukkit.getWorld(world_name);
 
         //Creating the wall
         int timer = 30;
