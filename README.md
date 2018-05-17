@@ -3,7 +3,7 @@ A Spigot (Minecraft) Plugin
 
 Plugin currently in **Beta**
 
-Latest version: `0.4.1.1-Beta`
+Latest version: `0.4.2-Beta`
 
 _Don't expect this plugin to be stable. It's beta for a reason._
 _It's not feature complete yet._

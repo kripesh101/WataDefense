@@ -1,5 +1,12 @@
 # WataDefense Changelog
 
+**v0.4.2-Beta**
+
+* Added option to delete world folder when stopping server. `delete_world_on_exit` in config.yml
+* The location of the enemy's block is also shown in chat.
+* When someone takes either of the bedrock, everyone is alerted via chat.
+* The wall is now made up of barrier blocks.
+
 **v0.4.1.1-Beta**
 
 * Fixed a flaw with wall generation algorithm, introduced in 0.4-Beta. _Current solution for this isn't perfect, but does the job!_

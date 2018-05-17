@@ -9,5 +9,6 @@ walltime: 36000 #Specify time for preparation stage in ticks. (1 second = 20 tic
 block_distance: 500 #Distance between the blocks of the two teams. Value recommended to be an even number.
 border_distance: 125 #Distance between BLOCK and the border. NOT DISTANCE FROM CENTRE. Border will always be square shape.
 first_run: true #If true, plugin will not run. This is to prevent running at first run.
+delete_world_on_exit: false #If true, the world files will be permanently deleted while server turns off.
 
 #Notes on block_distance: Only X coordinate will change based on this value. Centre between these blocks will always be X=8 Z=8.

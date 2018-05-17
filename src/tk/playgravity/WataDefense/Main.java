@@ -14,6 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -71,6 +72,12 @@ public class Main extends JavaPlugin implements Listener {
                         interactor.setPlayerListName("BR " + interactor.getName());
                         interacted_block.setType(Material.STRUCTURE_BLOCK);
                         run_as_console("minecraft:title @a title {" + '"' + "text" + '"' + ":" + '"' + "BEDROCK OBTAINED!" + '"' + "}");
+                        if (red_block_interacted){
+                            run_as_console("minecraft:tellraw @a {" + '"' + "text" + '"' + ":" + '"' + "BEDROCK OF RED TAKEN!" + '"' + "," + '"' + "color" + '"' + ":" + '"' + "blue" + '"' +"}");
+                        }
+                        else{
+                            run_as_console("minecraft:tellraw @a {" + '"' + "text" + '"' + ":" + '"' + "BEDROCK OF BLUE TAKEN!" + '"' + "," + '"' + "color" + '"' + ":" + '"' + "red" + '"' +"}");
+                        }
                         interactor.addScoreboardTag("bedrock");
                     } else {
                         interactor.sendMessage("Go break the other teams' bedrock");
@@ -150,6 +157,8 @@ public class Main extends JavaPlugin implements Listener {
                         run_as_console("minecraft:title @a[team=!] times 0 140 20");
                         run_as_console("minecraft:title @a[team=red] title {" + '"' + "text" + '"' + ":" + '"' + "Block at X = " + blue_block_x + ", Z = 8" + '"' + "}");
                         run_as_console("minecraft:title @a[team=blue] title {" + '"' + "text" + '"' + ":" + '"' + "Block at X = " + red_block_x + ", Z = 8" + '"' + "}");
+                        run_as_console("minecraft:tellraw @a[team=red {" + '"' + "text" + '"' + ":" + '"' + "Enemy Block at X = " + blue_block_x + ", Z = 8" + '"' + "}");
+                        run_as_console("minecraft:tellraw @a[team=blue] {" + '"' + "text" + '"' + ":" + '"' + "Enemy Block at X = " + red_block_x + ", Z = 8" + '"' + "}");
                     }
                 }, timer);
 
@@ -190,13 +199,15 @@ public class Main extends JavaPlugin implements Listener {
             int y_max = max_block.getY();
             int z_max = max_block.getZ();
 
-            String fill_commnd = "minecraft:fill " + x_min + " " + y_min + " " + z_min + " " + x_max + " " + y_max + " " + z_max + " minecraft:air 0";
-
+            String fill_commnd = "minecraft:fill " + x_min + " " + y_min + 1 + " " + z_min + " " + x_max + " " + y_max + " " + z_max + " minecraft:air 0";
+            String fill_commnd_2 = "minecraft:fill " + x_min + " " + y_min + " " + z_min + " " + x_max + " " + y_min + " " + z_max + " minecraft:bedrock 0";
+            
             Bukkit.getScheduler().runTaskLater(this, new Runnable() {
                 @Override
                 public void run() {
                     the_chunk.load();
                     run_as_console(fill_commnd);
+                    run_as_console(fill_commnd_2);
                     the_chunk.unload(true);
                 }
             }, timer);
@@ -212,6 +223,15 @@ public class Main extends JavaPlugin implements Listener {
             }
         }, timer);
 
+    }
+
+    @Override
+    public void onDisable() {
+        boolean del = config.getBoolean("delete_world_on_exit");
+        boolean first_run = config.getBoolean("first_run");
+        if (!first_run && del){
+            deleteWorld(the_world);
+        }
     }
 
     @Override
@@ -260,7 +280,7 @@ public class Main extends JavaPlugin implements Listener {
             int y_max = max_block.getY();
             int z_max = max_block.getZ();
 
-            String fill_commnd = "minecraft:fill " + x_min + " " + y_min + " " + z_min + " " + x_max + " " + y_max + " " + z_max + " minecraft:bedrock 0";
+            String fill_commnd = "minecraft:fill " + x_min + " " + y_min + " " + z_min + " " + x_max + " " + y_max + " " + z_max + " minecraft:barrier 0";
 
             Bukkit.getScheduler().runTaskLater(this, new Runnable() {
                 @Override
@@ -412,5 +432,24 @@ public class Main extends JavaPlugin implements Listener {
             }
             return true;
         }
+    }
+
+    private void deleteWorld(World world_to_delete){
+        File folder = world_to_delete.getWorldFolder();
+        deleter(folder);
+    }
+
+    private boolean deleter(File path) {
+        if(path.exists()) {
+            File files[] = path.listFiles();
+            for(int i=0; i<files.length; i++) {
+                if(files[i].isDirectory()) {
+                    deleter(files[i]);
+                } else {
+                    files[i].delete();
+                }
+            }
+        }
+        return(path.delete());
     }
 }
