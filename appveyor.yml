@@ -11,3 +11,4 @@ build_script:
   - cd %APPVEYOR_BUILD_FOLDER%
 artifacts:
     path: target\*.jar
+    name: WataDefense
