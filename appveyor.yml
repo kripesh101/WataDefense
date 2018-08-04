@@ -9,5 +9,5 @@ install:
 build_script:
   - mvn clean package
   - cd %APPVEYOR_BUILD_FOLDER%
-artifact:
+artifacts:
     path: target\*.jar
