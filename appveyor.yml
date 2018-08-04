@@ -7,4 +7,7 @@ install:
   - cmd: mvn --version
   - cmd: java -version
 build_script:
-  - mvn clean package -Pmetrics
+  - mvn clean package
+  - cd %APPVEYOR_BUILD_FOLDER%
+artifact:
+    path: target\*.jar
